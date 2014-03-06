@@ -90,6 +90,7 @@ static void event_cb(bufferevent* bev, short what, void* ctx)
         evbuffer* output = bufferevent_get_output(bev);
         evbuffer_add(output, send_buffer, send_len);
         printf("send 101\n");
+        delete buffer;
     }
     else
     {
@@ -102,7 +103,7 @@ static void recv_cb(bufferevent* bev, void* ctx)
 {
     evbuffer *input = bufferevent_get_input(bev);
     unsigned char recv_buffer[65535];
-    int recv_len = 65535;
+    unsigned int recv_len = 65535;
     recv_len = evbuffer_copyout(input, recv_buffer, recv_len);
     evbuffer_drain(input, recv_len);
     printf("recv %d bytes:\n", recv_len);
@@ -114,5 +115,16 @@ static void recv_cb(bufferevent* bev, void* ctx)
         else if ((i + 1) % 4 == 0)
             printf("   ");
     }
+    printf("\n");
+    // decode it and print cmd id
+    // skip length(4) and uin(4) directly
+    unsigned short command = CProto::n2h_16(recv_buffer + 8);
+    int body_size = CProto::PacksHelper::GetBodySize(command);
+    char *body_buffer = new char[body_size];
+    CProto::packs packet;
+    packet.Init(command, body_buffer);
+    packet.Decode(recv_buffer, recv_len);
+    printf("command %d, %d bytes left\n", packet.head.command, recv_len);
+    bufferevent_free(bev);
 }
 
