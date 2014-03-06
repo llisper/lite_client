@@ -64,6 +64,7 @@ namespace CProto {
 		XJCMD_CSC_TRAINING_CONFIRM = 615, /* %Comment% */
 		XJCMD_CSC_KUNGFU_TRANSMIT = 616, /* %Comment% */
 		XJCMD_CSC_CARDLOTTERY_DRAW = 617, /* %Comment% */
+		XJCMD_CSC_CARDLOTTERY_10_DRAW = 618, /* %Comment% */
 		XJCMD_CSC_FRIENDINFO_LIST = 700, /* 好友列表 */
 		XJCMD_CSC_FRIENDEVENT_LIST = 702, /* 好友动态 */
 		XJCMD_CSC_FRIEND_NEW = 703, /* 新朋友 */
@@ -94,6 +95,8 @@ namespace CProto {
 		XJCMD_CSC_ASK_DATE = 931, /* 剧情邀约 */
 		XJCMD_SC_EMOTION_SYNC = 932, /* 情感系统同步 */
 		XJCMD_CSC_GENERAL_PRESENT = 933, /* 剧情赠送 */
+		XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP = 934, /* 好感度升级可领奖 */
+		XJCMD_CSC_PRESENT_SHOP = 935, /* 商城购买破阶道具 */
 		XJCMD_CSC_PINJIAN_OPEN = 1000, /* 品剑大会主界面 */
 		XJCMD_CSC_PINJIAN_FIGHT = 1001, /* 品剑大会比武 */
 		XJCMD_CSC_PINJIAN_TOPLIST = 1002, /* 品剑大会武榜 */

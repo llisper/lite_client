@@ -3,3 +3,6 @@ file(GLOB PROTO_SOURCE
     )
 
 add_library(proto STATIC ${PROTO_SOURCE})
+set_target_properties(proto
+    PROPERTIES COMPILE_FLAGS ${cflags}
+    )

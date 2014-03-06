@@ -894,6 +894,57 @@ void stBattleArray::SetDefault()
 
 }
 
+void st10DrawResult::Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError) 
+{
+    unsigned int leftsize;
+    leftsize = buffersize;
+    unsigned char *p;
+    p = buffer;
+    buffersize = 0;
+      
+    if (2 > leftsize)
+        throw EncodeError();
+    CProto::h2n_16(p, general_id);
+    buffersize += 2;
+    p += 2;
+    leftsize -= 2;
+  
+    if (leftsize == 0)
+        throw EncodeError();
+    *p = souls;
+    ++buffersize;
+    ++p;
+    --leftsize;
+}
+
+void st10DrawResult::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
+{
+    const unsigned char *p;
+    p = buffer;
+    
+
+      
+    if (2 > buffersize)
+        throw DecodeError();
+    general_id = CProto::n2h_16(p);
+    buffersize -= 2;
+    p += 2;
+    if (1 > buffersize)
+        throw DecodeError();
+    souls = *p;
+    --buffersize;
+    ++p;
+}
+
+st10DrawResult::st10DrawResult()
+{
+    SetDefault();
+}
+void st10DrawResult::SetDefault()
+{
+
+}
+
 
 /* body */
 void XJCMD_SC_USERGENERAL_FULLDATASC::Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError) 
@@ -2674,6 +2725,139 @@ XJCMD_CSC_CARDLOTTERY_DRAWSC::XJCMD_CSC_CARDLOTTERY_DRAWSC()
 }
 void XJCMD_CSC_CARDLOTTERY_DRAWSC::SetDefault()
 {
+    times_to_get_top_card = -1;
+
+}
+
+void XJCMD_CSC_CARDLOTTERY_10_DRAWCS::Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError) 
+{
+    unsigned int leftsize;
+    leftsize = buffersize;
+    unsigned char *p;
+    p = buffer;
+    buffersize = 0;
+    
+}
+
+void XJCMD_CSC_CARDLOTTERY_10_DRAWCS::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
+{
+    const unsigned char *p;
+    p = buffer;
+    
+
+    
+}
+
+int XJCMD_CSC_CARDLOTTERY_10_DRAWCS::CommandID()
+{
+    return XJCMD_CSC_CARDLOTTERY_10_DRAW;
+}
+int XJCMD_CSC_CARDLOTTERY_10_DRAWCS::GetCommandID()
+{
+    return XJCMD_CSC_CARDLOTTERY_10_DRAW;
+}
+
+XJCMD_CSC_CARDLOTTERY_10_DRAWCS::XJCMD_CSC_CARDLOTTERY_10_DRAWCS()
+{
+    SetDefault();
+}
+void XJCMD_CSC_CARDLOTTERY_10_DRAWCS::SetDefault()
+{
+
+}
+
+void XJCMD_CSC_CARDLOTTERY_10_DRAWSC::Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError) 
+{
+    unsigned int leftsize;
+    leftsize = buffersize;
+    unsigned char *p;
+    p = buffer;
+    buffersize = 0;
+      
+    if (2 > leftsize)
+        throw EncodeError();
+    CProto::h2n_16(p, retcode);
+    buffersize += 2;
+    p += 2;
+    leftsize -= 2;
+  
+    if (1 > leftsize)
+        throw EncodeError();
+    *p = result_arraylen;
+    ++buffersize;
+    ++p;
+    --leftsize;
+  
+    for (unsigned int i=0; i<result_arraylen; ++i) {
+        arraysize = leftsize;
+        result[i].Encode(p, arraysize);
+        buffersize += arraysize;
+        p += arraysize;
+        leftsize -= arraysize;
+    }
+  
+    if (leftsize == 0)
+        throw EncodeError();
+    *p = times_to_get_top_card;
+    ++buffersize;
+    ++p;
+    --leftsize;
+}
+
+void XJCMD_CSC_CARDLOTTERY_10_DRAWSC::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
+{
+    const unsigned char *p;
+    p = buffer;
+    SetDefault();
+
+      
+    if (2 > buffersize)
+        throw DecodeError();
+    retcode = static_cast<CardLotteryECode>(CProto::n2h_16(p));
+    buffersize -= 2;
+    p += 2;
+  
+    if (1 > buffersize)
+        throw DecodeError();
+    arraysize = *p;
+    --buffersize;
+    ++p;
+    //memset(&result, 0, sizeof(st10DrawResult)*10);
+    result_arraylen = 0;
+    if (arraysize > 10) {
+       throw DecodeError();
+    }
+  
+    for (unsigned int i=0; i<arraysize; ++i) {
+        unsigned int buffersize2 = buffersize;
+        result[i].Decode(p, buffersize2);
+        p += (buffersize - buffersize2);
+        buffersize = buffersize2;
+    }
+    result_arraylen = arraysize;
+    if (1 > buffersize)
+        throw DecodeError();
+    times_to_get_top_card = *p;
+    --buffersize;
+    ++p;
+}
+
+int XJCMD_CSC_CARDLOTTERY_10_DRAWSC::CommandID()
+{
+    return XJCMD_CSC_CARDLOTTERY_10_DRAW;
+}
+int XJCMD_CSC_CARDLOTTERY_10_DRAWSC::GetCommandID()
+{
+    return XJCMD_CSC_CARDLOTTERY_10_DRAW;
+}
+
+XJCMD_CSC_CARDLOTTERY_10_DRAWSC::XJCMD_CSC_CARDLOTTERY_10_DRAWSC()
+{
+    SetDefault();
+}
+void XJCMD_CSC_CARDLOTTERY_10_DRAWSC::SetDefault()
+{
+    result_arraylen = 0;
     times_to_get_top_card = -1;
 
 }

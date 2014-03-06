@@ -77,6 +77,10 @@ public:
     int lastContactTime;
 /* 好感度升级领奖标记 */
     unsigned char admireRewardFlag_arraylen;	unsigned char admireRewardFlag[(1+(PROTO_MAX_ADMIRE_GENERAL_LEVEL-1)/8)];
+/* 是否去过某场景 */
+    unsigned char senarioWent_arraylen;	unsigned char senarioWent[(1+(PROTO_MAX_ADMIRE_SENARIO-1)/8)];
+/* 是否送过某礼物 */
+    unsigned char presentSend_arraylen;	unsigned char presentSend[(1+(PROTO_MAX_ADMIRE_PRESENT-1)/8)];
 
 private:
     unsigned int arraysize;
@@ -90,16 +94,29 @@ public:
     stAdmireList();
     void SetDefault();
 
-/* 武将好感度列表 */
+/* 武将好感度列表，登录全量，变化增量 */
     unsigned char admireList_arraylen;	stAdmireInfo admireList[PROTO_MAX_ADMIRE_GENERAL_NUM];
-/* 所有武将吃醋状态 */
-    unsigned char jealousFlag_arraylen;	unsigned char jealousFlag[(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)];
-/* 所有武将本日已聊过 */
-    unsigned char chatted_arraylen;	unsigned char chatted[(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)];
-/* 所有武将本日邀约成功，约会中 */
-    unsigned char dating_arraylen;	unsigned char dating[(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)];
-/* 所有武将本日已邀约过 */
-    unsigned char dated_arraylen;	unsigned char dated[(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)];
+
+private:
+    unsigned int arraysize;
+};
+/* 可赠送格子内容 */
+struct stPresentInfo {
+public:
+    void Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError);
+    void Decode(const unsigned char* buffer, unsigned int& bufferlen) throw (DecodeError);
+
+    stPresentInfo();
+    void SetDefault();
+
+/* 格子序号，从0开始 */
+    short tableIndex;
+/* 礼品ID */
+    int presentID;
+/* 礼品个数 */
+    int count;
+/* 礼物类型 */
+    USER_EMOTION_PRESENT_TYPE present_type;
 
 private:
     unsigned int arraysize;
@@ -121,6 +138,8 @@ public:
     int chat_story_id;
 /* 对话选项 */
     char chat_option;
+/* 对话场景ID */
+    short senario_id;
 
 private:
     unsigned int arraysize;
@@ -193,8 +212,12 @@ public:
     void SetDefault();
 
     
+/* 武将ID */
+    int general_id;
 /* 礼物id */
     int present_id;
+/* 礼物index */
+    int tableIndex;
 /* 礼物类型 */
     USER_EMOTION_PRESENT_TYPE present_type;
 
@@ -214,8 +237,86 @@ public:
     
 /* 是否成功 */
     char result;
-/* 操作好感度返回 */
+/* 操作好感度基础返回 */
     int admire_count;
+/* 操作好感度额外返回 */
+    int admire_count_add;
+/* 是否当日喜欢 */
+    int fav_type;
+/* 武将ID */
+    int general_id;
+/* 礼物id */
+    int present_id;
+/* 礼物剩余个数 */
+    int count;
+
+private:
+    unsigned int arraysize;
+};
+class XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS : public PackBody{
+public:
+    static int GetCommandID();
+    void Encode(unsigned char *buffer,unsigned int& buffersize) throw (EncodeError);
+    void Decode(const unsigned char* buffer,unsigned int& bufferlen) throw (DecodeError);
+    int CommandID();
+
+    XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS();
+    void SetDefault();
+
+    
+/* 武将id */
+    short general_id;
+
+private:
+    unsigned int arraysize;
+};
+class XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC : public PackBody{
+public:
+    static int GetCommandID();
+    void Encode(unsigned char *buffer,unsigned int& buffersize) throw (EncodeError);
+    void Decode(const unsigned char* buffer,unsigned int& bufferlen) throw (DecodeError);
+    int CommandID();
+
+    XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC();
+    void SetDefault();
+
+    
+/* 是否成功 */
+    char result;
+
+private:
+    unsigned int arraysize;
+};
+class XJCMD_CSC_PRESENT_SHOPCS : public PackBody{
+public:
+    static int GetCommandID();
+    void Encode(unsigned char *buffer,unsigned int& buffersize) throw (EncodeError);
+    void Decode(const unsigned char* buffer,unsigned int& bufferlen) throw (DecodeError);
+    int CommandID();
+
+    XJCMD_CSC_PRESENT_SHOPCS();
+    void SetDefault();
+
+    
+/* 礼品id */
+    int present_id;
+
+private:
+    unsigned int arraysize;
+};
+class XJCMD_CSC_PRESENT_SHOPSC : public PackBody{
+public:
+    static int GetCommandID();
+    void Encode(unsigned char *buffer,unsigned int& buffersize) throw (EncodeError);
+    void Decode(const unsigned char* buffer,unsigned int& bufferlen) throw (DecodeError);
+    int CommandID();
+
+    XJCMD_CSC_PRESENT_SHOPSC();
+    void SetDefault();
+
+    
+/* 是否成功 */
+    char result;
 
 private:
     unsigned int arraysize;
@@ -237,8 +338,18 @@ public:
     unsigned char dirtyflag_arraylen;	unsigned char dirtyflag[(1+(EMOTION_ASC_NUM-1)/8)];
 /* 好感度 */
     stAdmireList general_admire;
-/* 约会中 */
-    char dating;
+/* 所有武将吃醋状态 */
+    unsigned char jealousFlag_arraylen;	unsigned char jealousFlag[(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)];
+/* 所有武将本日已聊过 */
+    unsigned char chatted_arraylen;	unsigned char chatted[(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)];
+/* 所有武将本日邀约成功，约会中 */
+    unsigned char dating_arraylen;	unsigned char dating[(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)];
+/* 所有武将本日已邀约过 */
+    unsigned char dated_arraylen;	unsigned char dated[(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)];
+/* 赠送列表 */
+    unsigned char general_present_arraylen;	stPresentInfo general_present[PROTO_MAX_ADMIRE_PRESENT];
+/* 剩余购买次数 */
+    unsigned char remain_present_time;
 
 private:
     unsigned int arraysize;

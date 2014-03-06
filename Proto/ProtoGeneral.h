@@ -204,6 +204,23 @@ public:
 private:
     unsigned int arraysize;
 };
+/* 10连抽结果 */
+struct st10DrawResult {
+public:
+    void Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError);
+    void Decode(const unsigned char* buffer, unsigned int& bufferlen) throw (DecodeError);
+
+    st10DrawResult();
+    void SetDefault();
+
+/* 抽到的武将id */
+    short general_id;
+/* 如果souls不为0, 表示武将已有, 得到元神 */
+    unsigned char souls;
+
+private:
+    unsigned int arraysize;
+};
 class XJCMD_SC_USERGENERAL_FULLDATASC : public PackBody{
 public:
     static int GetCommandID();
@@ -658,6 +675,42 @@ public:
     short general_id;
 /* 如果souls不为0, 表示武将已有, 得到元神 */
     unsigned char souls;
+/* 还有多少次可以拿到顶级卡(极品质的卡) */
+    char times_to_get_top_card;
+
+private:
+    unsigned int arraysize;
+};
+class XJCMD_CSC_CARDLOTTERY_10_DRAWCS : public PackBody{
+public:
+    static int GetCommandID();
+    void Encode(unsigned char *buffer,unsigned int& buffersize) throw (EncodeError);
+    void Decode(const unsigned char* buffer,unsigned int& bufferlen) throw (DecodeError);
+    int CommandID();
+
+    XJCMD_CSC_CARDLOTTERY_10_DRAWCS();
+    void SetDefault();
+
+    
+
+private:
+    unsigned int arraysize;
+};
+class XJCMD_CSC_CARDLOTTERY_10_DRAWSC : public PackBody{
+public:
+    static int GetCommandID();
+    void Encode(unsigned char *buffer,unsigned int& buffersize) throw (EncodeError);
+    void Decode(const unsigned char* buffer,unsigned int& bufferlen) throw (DecodeError);
+    int CommandID();
+
+    XJCMD_CSC_CARDLOTTERY_10_DRAWSC();
+    void SetDefault();
+
+    
+/* 错误代码 */
+    CardLotteryECode retcode;
+/* 10连抽结果数据集 */
+    unsigned char result_arraylen;	st10DrawResult result[10];
 /* 还有多少次可以拿到顶级卡(极品质的卡) */
     char times_to_get_top_card;
 

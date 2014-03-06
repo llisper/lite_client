@@ -168,6 +168,10 @@ public:
     uint64_t rare_draw_timestamp;
 /* 特级抽卡时间戳 */
     uint64_t epic_draw_timestamp;
+/* 声望 */
+    int prestige;
+/* 下次扫荡时间 */
+    int next_explore_challenge_bat_time;
 
 private:
     unsigned int arraysize;

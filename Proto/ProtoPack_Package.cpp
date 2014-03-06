@@ -70,6 +70,12 @@ int PackcHelper::GetBodySize(int cmd)
     case XJCMD_CSC_GENERAL_PRESENT:
 	return sizeof(XJCMD_CSC_GENERAL_PRESENTCS);
 	break;
+    case XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP:
+	return sizeof(XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS);
+	break;
+    case XJCMD_CSC_PRESENT_SHOP:
+	return sizeof(XJCMD_CSC_PRESENT_SHOPCS);
+	break;
     case XJCMD_CSC_USEREXPLORE_CHALLENGE:
 	return sizeof(XJCMD_CSC_USEREXPLORE_CHALLENGECS);
 	break;
@@ -120,6 +126,9 @@ int PackcHelper::GetBodySize(int cmd)
 	break;
     case XJCMD_CSC_CARDLOTTERY_DRAW:
 	return sizeof(XJCMD_CSC_CARDLOTTERY_DRAWCS);
+	break;
+    case XJCMD_CSC_CARDLOTTERY_10_DRAW:
+	return sizeof(XJCMD_CSC_CARDLOTTERY_10_DRAWCS);
 	break;
     case XJCMD_CSC_GENERALTRAVEL_DETAIL:
 	return sizeof(XJCMD_CSC_GENERALTRAVEL_DETAILCS);
@@ -378,6 +387,20 @@ XJCMD_CSC_GENERAL_PRESENTCS* packc::GetXJCMD_CSC_GENERAL_PRESENTCS()
     return 0;
 }
 
+XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS* packc::GetXJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS()
+{
+    if (head.command == XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP)
+	return csXJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP;
+    return 0;
+}
+
+XJCMD_CSC_PRESENT_SHOPCS* packc::GetXJCMD_CSC_PRESENT_SHOPCS()
+{
+    if (head.command == XJCMD_CSC_PRESENT_SHOP)
+	return csXJCMD_CSC_PRESENT_SHOP;
+    return 0;
+}
+
 XJCMD_CSC_USEREXPLORE_CHALLENGECS* packc::GetXJCMD_CSC_USEREXPLORE_CHALLENGECS()
 {
     if (head.command == XJCMD_CSC_USEREXPLORE_CHALLENGE)
@@ -494,6 +517,13 @@ XJCMD_CSC_CARDLOTTERY_DRAWCS* packc::GetXJCMD_CSC_CARDLOTTERY_DRAWCS()
 {
     if (head.command == XJCMD_CSC_CARDLOTTERY_DRAW)
 	return csXJCMD_CSC_CARDLOTTERY_DRAW;
+    return 0;
+}
+
+XJCMD_CSC_CARDLOTTERY_10_DRAWCS* packc::GetXJCMD_CSC_CARDLOTTERY_10_DRAWCS()
+{
+    if (head.command == XJCMD_CSC_CARDLOTTERY_10_DRAW)
+	return csXJCMD_CSC_CARDLOTTERY_10_DRAW;
     return 0;
 }
 
@@ -785,6 +815,12 @@ bool packc::Init(int cmd, void* body)
         case XJCMD_CSC_GENERAL_PRESENT:
 	        csXJCMD_CSC_GENERAL_PRESENT = new (aBody) XJCMD_CSC_GENERAL_PRESENTCS;
 	        break;
+        case XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP:
+	        csXJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP = new (aBody) XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS;
+	        break;
+        case XJCMD_CSC_PRESENT_SHOP:
+	        csXJCMD_CSC_PRESENT_SHOP = new (aBody) XJCMD_CSC_PRESENT_SHOPCS;
+	        break;
         case XJCMD_CSC_USEREXPLORE_CHALLENGE:
 	        csXJCMD_CSC_USEREXPLORE_CHALLENGE = new (aBody) XJCMD_CSC_USEREXPLORE_CHALLENGECS;
 	        break;
@@ -835,6 +871,9 @@ bool packc::Init(int cmd, void* body)
 	        break;
         case XJCMD_CSC_CARDLOTTERY_DRAW:
 	        csXJCMD_CSC_CARDLOTTERY_DRAW = new (aBody) XJCMD_CSC_CARDLOTTERY_DRAWCS;
+	        break;
+        case XJCMD_CSC_CARDLOTTERY_10_DRAW:
+	        csXJCMD_CSC_CARDLOTTERY_10_DRAW = new (aBody) XJCMD_CSC_CARDLOTTERY_10_DRAWCS;
 	        break;
         case XJCMD_CSC_GENERALTRAVEL_DETAIL:
 	        csXJCMD_CSC_GENERALTRAVEL_DETAIL = new (aBody) XJCMD_CSC_GENERALTRAVEL_DETAILCS;
@@ -1001,6 +1040,12 @@ int PacksHelper::GetBodySize(int cmd)
     case XJCMD_CSC_GENERAL_PRESENT:
 	return sizeof(XJCMD_CSC_GENERAL_PRESENTSC);
 	break;
+    case XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP:
+	return sizeof(XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC);
+	break;
+    case XJCMD_CSC_PRESENT_SHOP:
+	return sizeof(XJCMD_CSC_PRESENT_SHOPSC);
+	break;
     case XJCMD_SC_EMOTION_SYNC:
 	return sizeof(XJCMD_SC_EMOTION_SYNCSC);
 	break;
@@ -1069,6 +1114,9 @@ int PacksHelper::GetBodySize(int cmd)
 	break;
     case XJCMD_CSC_CARDLOTTERY_DRAW:
 	return sizeof(XJCMD_CSC_CARDLOTTERY_DRAWSC);
+	break;
+    case XJCMD_CSC_CARDLOTTERY_10_DRAW:
+	return sizeof(XJCMD_CSC_CARDLOTTERY_10_DRAWSC);
 	break;
     case XJCMD_CSC_GENERALTRAVEL_DETAIL:
 	return sizeof(XJCMD_CSC_GENERALTRAVEL_DETAILSC);
@@ -1373,6 +1421,20 @@ XJCMD_CSC_GENERAL_PRESENTSC* packs::GetXJCMD_CSC_GENERAL_PRESENTSC()
     return 0;
 }
 
+XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC* packs::GetXJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC()
+{
+    if (head.command == XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP)
+	return scXJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP;
+    return 0;
+}
+
+XJCMD_CSC_PRESENT_SHOPSC* packs::GetXJCMD_CSC_PRESENT_SHOPSC()
+{
+    if (head.command == XJCMD_CSC_PRESENT_SHOP)
+	return scXJCMD_CSC_PRESENT_SHOP;
+    return 0;
+}
+
 XJCMD_SC_EMOTION_SYNCSC* packs::GetXJCMD_SC_EMOTION_SYNCSC()
 {
     if (head.command == XJCMD_SC_EMOTION_SYNC)
@@ -1531,6 +1593,13 @@ XJCMD_CSC_CARDLOTTERY_DRAWSC* packs::GetXJCMD_CSC_CARDLOTTERY_DRAWSC()
 {
     if (head.command == XJCMD_CSC_CARDLOTTERY_DRAW)
 	return scXJCMD_CSC_CARDLOTTERY_DRAW;
+    return 0;
+}
+
+XJCMD_CSC_CARDLOTTERY_10_DRAWSC* packs::GetXJCMD_CSC_CARDLOTTERY_10_DRAWSC()
+{
+    if (head.command == XJCMD_CSC_CARDLOTTERY_10_DRAW)
+	return scXJCMD_CSC_CARDLOTTERY_10_DRAW;
     return 0;
 }
 
@@ -1876,6 +1945,12 @@ bool packs::Init(int cmd, void* body)
         case XJCMD_CSC_GENERAL_PRESENT:
 	        scXJCMD_CSC_GENERAL_PRESENT = new (aBody) XJCMD_CSC_GENERAL_PRESENTSC;
 	        break;
+        case XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP:
+	        scXJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP = new (aBody) XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC;
+	        break;
+        case XJCMD_CSC_PRESENT_SHOP:
+	        scXJCMD_CSC_PRESENT_SHOP = new (aBody) XJCMD_CSC_PRESENT_SHOPSC;
+	        break;
         case XJCMD_SC_EMOTION_SYNC:
 	        scXJCMD_SC_EMOTION_SYNC = new (aBody) XJCMD_SC_EMOTION_SYNCSC;
 	        break;
@@ -1944,6 +2019,9 @@ bool packs::Init(int cmd, void* body)
 	        break;
         case XJCMD_CSC_CARDLOTTERY_DRAW:
 	        scXJCMD_CSC_CARDLOTTERY_DRAW = new (aBody) XJCMD_CSC_CARDLOTTERY_DRAWSC;
+	        break;
+        case XJCMD_CSC_CARDLOTTERY_10_DRAW:
+	        scXJCMD_CSC_CARDLOTTERY_10_DRAW = new (aBody) XJCMD_CSC_CARDLOTTERY_10_DRAWSC;
 	        break;
         case XJCMD_CSC_GENERALTRAVEL_DETAIL:
 	        scXJCMD_CSC_GENERALTRAVEL_DETAIL = new (aBody) XJCMD_CSC_GENERALTRAVEL_DETAILSC;

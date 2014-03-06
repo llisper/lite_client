@@ -77,7 +77,7 @@ public:
 /* 聊天频道类型，值为-1时不放入相应聊天频道 */
     eChatTypeEnum chatType;
 /* 消息内容 */
-    stQhtml tipContent;
+    proto_string<0> tipContent;
 
 private:
     unsigned int arraysize;

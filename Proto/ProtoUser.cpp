@@ -598,6 +598,24 @@ void XJCMD_CSC_USERINFO_SYNSC::Encode(unsigned char *buffer, unsigned int& buffe
     p += 8;
     leftsize -= 8;
 	}
+
+	if (dirtyflag[USER_ASC_PRESTIGE>>3]&(1<<(USER_ASC_PRESTIGE&0x7))) {  
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, prestige);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+	}
+
+	if (dirtyflag[USER_ASC_NEXT_EXPLORE_CHALLENGE_BAT_TIME>>3]&(1<<(USER_ASC_NEXT_EXPLORE_CHALLENGE_BAT_TIME&0x7))) {  
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, next_explore_challenge_bat_time);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+	}
 }
 
 void XJCMD_CSC_USERINFO_SYNSC::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
@@ -841,6 +859,22 @@ void XJCMD_CSC_USERINFO_SYNSC::Decode(const unsigned char *buffer,unsigned int& 
     epic_draw_timestamp = CProto::n2h_64(p);
     buffersize -= 8;
     p += 8;
+	}
+
+	if (dirtyflag[USER_ASC_PRESTIGE>>3]&(1<<(USER_ASC_PRESTIGE&0x7))) {  
+    if (4 > buffersize)
+        throw DecodeError();
+    prestige = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
+	}
+
+	if (dirtyflag[USER_ASC_NEXT_EXPLORE_CHALLENGE_BAT_TIME>>3]&(1<<(USER_ASC_NEXT_EXPLORE_CHALLENGE_BAT_TIME&0x7))) {  
+    if (4 > buffersize)
+        throw DecodeError();
+    next_explore_challenge_bat_time = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
 	}
 }
 

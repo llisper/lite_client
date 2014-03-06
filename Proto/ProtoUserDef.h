@@ -46,7 +46,9 @@ enum USER_ATTR_SYN_CLIENT { /* 角色需要同步到客户端的属性 */
 	USER_ASC_COMBATPOWER , /* 战斗力 */
 	USER_ASC_RARE_DRAW_TIMESTAMP , /* 高级抽卡时间错 */
 	USER_ASC_EPIC_DRAW_TIMESTAMP , /* 特级抽卡时间戳 */
-	USER_ASC_NUM , /* 角色属性总数 */
+	USER_ASC_PRESTIGE , /* 声望 */
+	USER_ASC_NEXT_EXPLORE_CHALLENGE_BAT_TIME , /* 下次扫荡的时间 */
+	USER_ASC_NUM=64 , /* 角色属性总数 */
 };
 
 enum eCardTreeAwardType { /* 卡牌谱奖励枚举 */

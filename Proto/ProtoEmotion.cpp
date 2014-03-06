@@ -312,6 +312,34 @@ void stAdmireInfo::Encode(unsigned char *buffer, unsigned int& buffersize) throw
     buffersize += admireRewardFlag_arraylen;
     p += admireRewardFlag_arraylen;
     leftsize-= admireRewardFlag_arraylen;
+  
+    if (1 > leftsize)
+        throw EncodeError();
+    *p = senarioWent_arraylen;
+    ++buffersize;
+    ++p;
+    --leftsize;
+  
+    if (leftsize < (1+(PROTO_MAX_ADMIRE_SENARIO-1)/8)) 
+        throw EncodeError();
+    memcpy(p, &senarioWent[0], senarioWent_arraylen);
+    buffersize += senarioWent_arraylen;
+    p += senarioWent_arraylen;
+    leftsize-= senarioWent_arraylen;
+  
+    if (1 > leftsize)
+        throw EncodeError();
+    *p = presentSend_arraylen;
+    ++buffersize;
+    ++p;
+    --leftsize;
+  
+    if (leftsize < (1+(PROTO_MAX_ADMIRE_PRESENT-1)/8)) 
+        throw EncodeError();
+    memcpy(p, &presentSend[0], presentSend_arraylen);
+    buffersize += presentSend_arraylen;
+    p += presentSend_arraylen;
+    leftsize-= presentSend_arraylen;
 }
 
 void stAdmireInfo::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
@@ -356,6 +384,42 @@ void stAdmireInfo::Decode(const unsigned char *buffer,unsigned int& buffersize) 
     buffersize -= arraysize;
     p += arraysize;
     admireRewardFlag_arraylen = arraysize;
+  
+    if (1 > buffersize)
+        throw DecodeError();
+    arraysize = *p;
+    --buffersize;
+    ++p;
+    //memset(&senarioWent, 0, sizeof(unsigned char)*(1+(PROTO_MAX_ADMIRE_SENARIO-1)/8));
+    senarioWent_arraylen = 0;
+    if (arraysize > (1+(PROTO_MAX_ADMIRE_SENARIO-1)/8)) {
+       throw DecodeError();
+    }
+  
+    if (arraysize > buffersize)
+        throw DecodeError();
+    memcpy(&senarioWent, p, arraysize*sizeof(char));
+    buffersize -= arraysize;
+    p += arraysize;
+    senarioWent_arraylen = arraysize;
+  
+    if (1 > buffersize)
+        throw DecodeError();
+    arraysize = *p;
+    --buffersize;
+    ++p;
+    //memset(&presentSend, 0, sizeof(unsigned char)*(1+(PROTO_MAX_ADMIRE_PRESENT-1)/8));
+    presentSend_arraylen = 0;
+    if (arraysize > (1+(PROTO_MAX_ADMIRE_PRESENT-1)/8)) {
+       throw DecodeError();
+    }
+  
+    if (arraysize > buffersize)
+        throw DecodeError();
+    memcpy(&presentSend, p, arraysize*sizeof(char));
+    buffersize -= arraysize;
+    p += arraysize;
+    presentSend_arraylen = arraysize;
 }
 
 stAdmireInfo::stAdmireInfo()
@@ -365,6 +429,8 @@ stAdmireInfo::stAdmireInfo()
 void stAdmireInfo::SetDefault()
 {
     admireRewardFlag_arraylen = 0;
+    senarioWent_arraylen = 0;
+    presentSend_arraylen = 0;
 
 }
 
@@ -390,62 +456,6 @@ void stAdmireList::Encode(unsigned char *buffer, unsigned int& buffersize) throw
         p += arraysize;
         leftsize -= arraysize;
     }
-  
-    if (1 > leftsize)
-        throw EncodeError();
-    *p = jealousFlag_arraylen;
-    ++buffersize;
-    ++p;
-    --leftsize;
-  
-    if (leftsize < (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) 
-        throw EncodeError();
-    memcpy(p, &jealousFlag[0], jealousFlag_arraylen);
-    buffersize += jealousFlag_arraylen;
-    p += jealousFlag_arraylen;
-    leftsize-= jealousFlag_arraylen;
-  
-    if (1 > leftsize)
-        throw EncodeError();
-    *p = chatted_arraylen;
-    ++buffersize;
-    ++p;
-    --leftsize;
-  
-    if (leftsize < (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) 
-        throw EncodeError();
-    memcpy(p, &chatted[0], chatted_arraylen);
-    buffersize += chatted_arraylen;
-    p += chatted_arraylen;
-    leftsize-= chatted_arraylen;
-  
-    if (1 > leftsize)
-        throw EncodeError();
-    *p = dating_arraylen;
-    ++buffersize;
-    ++p;
-    --leftsize;
-  
-    if (leftsize < (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) 
-        throw EncodeError();
-    memcpy(p, &dating[0], dating_arraylen);
-    buffersize += dating_arraylen;
-    p += dating_arraylen;
-    leftsize-= dating_arraylen;
-  
-    if (1 > leftsize)
-        throw EncodeError();
-    *p = dated_arraylen;
-    ++buffersize;
-    ++p;
-    --leftsize;
-  
-    if (leftsize < (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) 
-        throw EncodeError();
-    memcpy(p, &dated[0], dated_arraylen);
-    buffersize += dated_arraylen;
-    p += dated_arraylen;
-    leftsize-= dated_arraylen;
 }
 
 void stAdmireList::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
@@ -473,78 +483,6 @@ void stAdmireList::Decode(const unsigned char *buffer,unsigned int& buffersize) 
         buffersize = buffersize2;
     }
     admireList_arraylen = arraysize;
-  
-    if (1 > buffersize)
-        throw DecodeError();
-    arraysize = *p;
-    --buffersize;
-    ++p;
-    //memset(&jealousFlag, 0, sizeof(unsigned char)*(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8));
-    jealousFlag_arraylen = 0;
-    if (arraysize > (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) {
-       throw DecodeError();
-    }
-  
-    if (arraysize > buffersize)
-        throw DecodeError();
-    memcpy(&jealousFlag, p, arraysize*sizeof(char));
-    buffersize -= arraysize;
-    p += arraysize;
-    jealousFlag_arraylen = arraysize;
-  
-    if (1 > buffersize)
-        throw DecodeError();
-    arraysize = *p;
-    --buffersize;
-    ++p;
-    //memset(&chatted, 0, sizeof(unsigned char)*(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8));
-    chatted_arraylen = 0;
-    if (arraysize > (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) {
-       throw DecodeError();
-    }
-  
-    if (arraysize > buffersize)
-        throw DecodeError();
-    memcpy(&chatted, p, arraysize*sizeof(char));
-    buffersize -= arraysize;
-    p += arraysize;
-    chatted_arraylen = arraysize;
-  
-    if (1 > buffersize)
-        throw DecodeError();
-    arraysize = *p;
-    --buffersize;
-    ++p;
-    //memset(&dating, 0, sizeof(unsigned char)*(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8));
-    dating_arraylen = 0;
-    if (arraysize > (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) {
-       throw DecodeError();
-    }
-  
-    if (arraysize > buffersize)
-        throw DecodeError();
-    memcpy(&dating, p, arraysize*sizeof(char));
-    buffersize -= arraysize;
-    p += arraysize;
-    dating_arraylen = arraysize;
-  
-    if (1 > buffersize)
-        throw DecodeError();
-    arraysize = *p;
-    --buffersize;
-    ++p;
-    //memset(&dated, 0, sizeof(unsigned char)*(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8));
-    dated_arraylen = 0;
-    if (arraysize > (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) {
-       throw DecodeError();
-    }
-  
-    if (arraysize > buffersize)
-        throw DecodeError();
-    memcpy(&dated, p, arraysize*sizeof(char));
-    buffersize -= arraysize;
-    p += arraysize;
-    dated_arraylen = arraysize;
 }
 
 stAdmireList::stAdmireList()
@@ -554,10 +492,84 @@ stAdmireList::stAdmireList()
 void stAdmireList::SetDefault()
 {
     admireList_arraylen = 0;
-    jealousFlag_arraylen = 0;
-    chatted_arraylen = 0;
-    dating_arraylen = 0;
-    dated_arraylen = 0;
+
+}
+
+void stPresentInfo::Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError) 
+{
+    unsigned int leftsize;
+    leftsize = buffersize;
+    unsigned char *p;
+    p = buffer;
+    buffersize = 0;
+      
+    if (2 > leftsize)
+        throw EncodeError();
+    CProto::h2n_16(p, tableIndex);
+    buffersize += 2;
+    p += 2;
+    leftsize -= 2;
+  
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, presentID);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+  
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, count);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+  
+    if (2 > leftsize)
+        throw EncodeError();
+    CProto::h2n_16(p, present_type);
+    buffersize += 2;
+    p += 2;
+    leftsize -= 2;
+}
+
+void stPresentInfo::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
+{
+    const unsigned char *p;
+    p = buffer;
+    
+
+      
+    if (2 > buffersize)
+        throw DecodeError();
+    tableIndex = CProto::n2h_16(p);
+    buffersize -= 2;
+    p += 2;
+  
+    if (4 > buffersize)
+        throw DecodeError();
+    presentID = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
+  
+    if (4 > buffersize)
+        throw DecodeError();
+    count = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
+  
+    if (2 > buffersize)
+        throw DecodeError();
+    present_type = static_cast<USER_EMOTION_PRESENT_TYPE>(CProto::n2h_16(p));
+    buffersize -= 2;
+    p += 2;
+}
+
+stPresentInfo::stPresentInfo()
+{
+    SetDefault();
+}
+void stPresentInfo::SetDefault()
+{
 
 }
 
@@ -591,6 +603,13 @@ void XJCMD_CSC_CHAT_STORYCS::Encode(unsigned char *buffer, unsigned int& buffers
     ++buffersize;
     ++p;
     --leftsize;
+  
+    if (2 > leftsize)
+        throw EncodeError();
+    CProto::h2n_16(p, senario_id);
+    buffersize += 2;
+    p += 2;
+    leftsize -= 2;
 }
 
 void XJCMD_CSC_CHAT_STORYCS::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
@@ -616,6 +635,12 @@ void XJCMD_CSC_CHAT_STORYCS::Decode(const unsigned char *buffer,unsigned int& bu
     chat_option = *p;
     --buffersize;
     ++p;
+  
+    if (2 > buffersize)
+        throw DecodeError();
+    senario_id = CProto::n2h_16(p);
+    buffersize -= 2;
+    p += 2;
 }
 
 int XJCMD_CSC_CHAT_STORYCS::CommandID()
@@ -849,7 +874,21 @@ void XJCMD_CSC_GENERAL_PRESENTCS::Encode(unsigned char *buffer, unsigned int& bu
       
     if (4 > leftsize)
         throw EncodeError();
+    CProto::h2n_32(p, general_id);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+  
+    if (4 > leftsize)
+        throw EncodeError();
     CProto::h2n_32(p, present_id);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+  
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, tableIndex);
     buffersize += 4;
     p += 4;
     leftsize -= 4;
@@ -871,7 +910,19 @@ void XJCMD_CSC_GENERAL_PRESENTCS::Decode(const unsigned char *buffer,unsigned in
       
     if (4 > buffersize)
         throw DecodeError();
+    general_id = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
+  
+    if (4 > buffersize)
+        throw DecodeError();
     present_id = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
+  
+    if (4 > buffersize)
+        throw DecodeError();
+    tableIndex = CProto::n2h_32(p);
     buffersize -= 4;
     p += 4;
   
@@ -921,6 +972,41 @@ void XJCMD_CSC_GENERAL_PRESENTSC::Encode(unsigned char *buffer, unsigned int& bu
     buffersize += 4;
     p += 4;
     leftsize -= 4;
+  
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, admire_count_add);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+  
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, fav_type);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+  
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, general_id);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+  
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, present_id);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+  
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, count);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
 }
 
 void XJCMD_CSC_GENERAL_PRESENTSC::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
@@ -940,6 +1026,36 @@ void XJCMD_CSC_GENERAL_PRESENTSC::Decode(const unsigned char *buffer,unsigned in
     admire_count = CProto::n2h_32(p);
     buffersize -= 4;
     p += 4;
+  
+    if (4 > buffersize)
+        throw DecodeError();
+    admire_count_add = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
+  
+    if (4 > buffersize)
+        throw DecodeError();
+    fav_type = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
+  
+    if (4 > buffersize)
+        throw DecodeError();
+    general_id = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
+  
+    if (4 > buffersize)
+        throw DecodeError();
+    present_id = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
+  
+    if (4 > buffersize)
+        throw DecodeError();
+    count = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
 }
 
 int XJCMD_CSC_GENERAL_PRESENTSC::CommandID()
@@ -956,6 +1072,196 @@ XJCMD_CSC_GENERAL_PRESENTSC::XJCMD_CSC_GENERAL_PRESENTSC()
     SetDefault();
 }
 void XJCMD_CSC_GENERAL_PRESENTSC::SetDefault()
+{
+
+}
+
+void XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS::Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError) 
+{
+    unsigned int leftsize;
+    leftsize = buffersize;
+    unsigned char *p;
+    p = buffer;
+    buffersize = 0;
+      
+    if (2 > leftsize)
+        throw EncodeError();
+    CProto::h2n_16(p, general_id);
+    buffersize += 2;
+    p += 2;
+    leftsize -= 2;
+}
+
+void XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
+{
+    const unsigned char *p;
+    p = buffer;
+    
+
+      
+    if (2 > buffersize)
+        throw DecodeError();
+    general_id = CProto::n2h_16(p);
+    buffersize -= 2;
+    p += 2;
+}
+
+int XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS::CommandID()
+{
+    return XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP;
+}
+int XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS::GetCommandID()
+{
+    return XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP;
+}
+
+XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS::XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS()
+{
+    SetDefault();
+}
+void XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPCS::SetDefault()
+{
+
+}
+
+void XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC::Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError) 
+{
+    unsigned int leftsize;
+    leftsize = buffersize;
+    unsigned char *p;
+    p = buffer;
+    buffersize = 0;
+      
+    if (leftsize == 0)
+        throw EncodeError();
+    *p = result;
+    ++buffersize;
+    ++p;
+    --leftsize;
+}
+
+void XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
+{
+    const unsigned char *p;
+    p = buffer;
+    
+
+        if (1 > buffersize)
+        throw DecodeError();
+    result = *p;
+    --buffersize;
+    ++p;
+}
+
+int XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC::CommandID()
+{
+    return XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP;
+}
+int XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC::GetCommandID()
+{
+    return XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UP;
+}
+
+XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC::XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC()
+{
+    SetDefault();
+}
+void XJCMD_CSC_GENERAL_ADMIRE_LEVEL_UPSC::SetDefault()
+{
+
+}
+
+void XJCMD_CSC_PRESENT_SHOPCS::Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError) 
+{
+    unsigned int leftsize;
+    leftsize = buffersize;
+    unsigned char *p;
+    p = buffer;
+    buffersize = 0;
+      
+    if (4 > leftsize)
+        throw EncodeError();
+    CProto::h2n_32(p, present_id);
+    buffersize += 4;
+    p += 4;
+    leftsize -= 4;
+}
+
+void XJCMD_CSC_PRESENT_SHOPCS::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
+{
+    const unsigned char *p;
+    p = buffer;
+    
+
+      
+    if (4 > buffersize)
+        throw DecodeError();
+    present_id = CProto::n2h_32(p);
+    buffersize -= 4;
+    p += 4;
+}
+
+int XJCMD_CSC_PRESENT_SHOPCS::CommandID()
+{
+    return XJCMD_CSC_PRESENT_SHOP;
+}
+int XJCMD_CSC_PRESENT_SHOPCS::GetCommandID()
+{
+    return XJCMD_CSC_PRESENT_SHOP;
+}
+
+XJCMD_CSC_PRESENT_SHOPCS::XJCMD_CSC_PRESENT_SHOPCS()
+{
+    SetDefault();
+}
+void XJCMD_CSC_PRESENT_SHOPCS::SetDefault()
+{
+
+}
+
+void XJCMD_CSC_PRESENT_SHOPSC::Encode(unsigned char *buffer, unsigned int& buffersize) throw (EncodeError) 
+{
+    unsigned int leftsize;
+    leftsize = buffersize;
+    unsigned char *p;
+    p = buffer;
+    buffersize = 0;
+      
+    if (leftsize == 0)
+        throw EncodeError();
+    *p = result;
+    ++buffersize;
+    ++p;
+    --leftsize;
+}
+
+void XJCMD_CSC_PRESENT_SHOPSC::Decode(const unsigned char *buffer,unsigned int& buffersize) throw (DecodeError)
+{
+    const unsigned char *p;
+    p = buffer;
+    
+
+        if (1 > buffersize)
+        throw DecodeError();
+    result = *p;
+    --buffersize;
+    ++p;
+}
+
+int XJCMD_CSC_PRESENT_SHOPSC::CommandID()
+{
+    return XJCMD_CSC_PRESENT_SHOP;
+}
+int XJCMD_CSC_PRESENT_SHOPSC::GetCommandID()
+{
+    return XJCMD_CSC_PRESENT_SHOP;
+}
+
+XJCMD_CSC_PRESENT_SHOPSC::XJCMD_CSC_PRESENT_SHOPSC()
+{
+    SetDefault();
+}
+void XJCMD_CSC_PRESENT_SHOPSC::SetDefault()
 {
 
 }
@@ -997,10 +1303,91 @@ void XJCMD_SC_EMOTION_SYNCSC::Encode(unsigned char *buffer, unsigned int& buffer
     leftsize -= arraysize;
 	}
 
+	if (dirtyflag[EMOTION_ASC_JEALOUS>>3]&(1<<(EMOTION_ASC_JEALOUS&0x7))) {  
+    if (1 > leftsize)
+        throw EncodeError();
+    *p = jealousFlag_arraylen;
+    ++buffersize;
+    ++p;
+    --leftsize;
+  
+    if (leftsize < (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) 
+        throw EncodeError();
+    memcpy(p, &jealousFlag[0], jealousFlag_arraylen);
+    buffersize += jealousFlag_arraylen;
+    p += jealousFlag_arraylen;
+    leftsize-= jealousFlag_arraylen;
+	}
+
+	if (dirtyflag[EMOTION_ASC_CHATTED>>3]&(1<<(EMOTION_ASC_CHATTED&0x7))) {  
+    if (1 > leftsize)
+        throw EncodeError();
+    *p = chatted_arraylen;
+    ++buffersize;
+    ++p;
+    --leftsize;
+  
+    if (leftsize < (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) 
+        throw EncodeError();
+    memcpy(p, &chatted[0], chatted_arraylen);
+    buffersize += chatted_arraylen;
+    p += chatted_arraylen;
+    leftsize-= chatted_arraylen;
+	}
+
 	if (dirtyflag[EMOTION_ASC_DATING>>3]&(1<<(EMOTION_ASC_DATING&0x7))) {  
+    if (1 > leftsize)
+        throw EncodeError();
+    *p = dating_arraylen;
+    ++buffersize;
+    ++p;
+    --leftsize;
+  
+    if (leftsize < (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) 
+        throw EncodeError();
+    memcpy(p, &dating[0], dating_arraylen);
+    buffersize += dating_arraylen;
+    p += dating_arraylen;
+    leftsize-= dating_arraylen;
+	}
+
+	if (dirtyflag[EMOTION_ASC_DATED>>3]&(1<<(EMOTION_ASC_DATED&0x7))) {  
+    if (1 > leftsize)
+        throw EncodeError();
+    *p = dated_arraylen;
+    ++buffersize;
+    ++p;
+    --leftsize;
+  
+    if (leftsize < (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) 
+        throw EncodeError();
+    memcpy(p, &dated[0], dated_arraylen);
+    buffersize += dated_arraylen;
+    p += dated_arraylen;
+    leftsize-= dated_arraylen;
+	}
+
+	if (dirtyflag[EMOTION_ASC_PRESENT>>3]&(1<<(EMOTION_ASC_PRESENT&0x7))) {  
+    if (1 > leftsize)
+        throw EncodeError();
+    *p = general_present_arraylen;
+    ++buffersize;
+    ++p;
+    --leftsize;
+  
+    for (unsigned int i=0; i<general_present_arraylen; ++i) {
+        arraysize = leftsize;
+        general_present[i].Encode(p, arraysize);
+        buffersize += arraysize;
+        p += arraysize;
+        leftsize -= arraysize;
+    }
+	}
+
+	if (dirtyflag[EMOTION_ASC_SHOP_PRESENT>>3]&(1<<(EMOTION_ASC_SHOP_PRESENT&0x7))) {  
     if (leftsize == 0)
         throw EncodeError();
-    *p = dating;
+    *p = remain_present_time;
     ++buffersize;
     ++p;
     --leftsize;
@@ -1044,9 +1431,110 @@ void XJCMD_SC_EMOTION_SYNCSC::Decode(const unsigned char *buffer,unsigned int& b
     buffersize = arraysize;
 	}
 
-	if (dirtyflag[EMOTION_ASC_DATING>>3]&(1<<(EMOTION_ASC_DATING&0x7))) {    if (1 > buffersize)
+	if (dirtyflag[EMOTION_ASC_JEALOUS>>3]&(1<<(EMOTION_ASC_JEALOUS&0x7))) {  
+    if (1 > buffersize)
         throw DecodeError();
-    dating = *p;
+    arraysize = *p;
+    --buffersize;
+    ++p;
+    //memset(&jealousFlag, 0, sizeof(unsigned char)*(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8));
+    jealousFlag_arraylen = 0;
+    if (arraysize > (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) {
+       throw DecodeError();
+    }
+  
+    if (arraysize > buffersize)
+        throw DecodeError();
+    memcpy(&jealousFlag, p, arraysize*sizeof(char));
+    buffersize -= arraysize;
+    p += arraysize;
+    jealousFlag_arraylen = arraysize;
+	}
+
+	if (dirtyflag[EMOTION_ASC_CHATTED>>3]&(1<<(EMOTION_ASC_CHATTED&0x7))) {  
+    if (1 > buffersize)
+        throw DecodeError();
+    arraysize = *p;
+    --buffersize;
+    ++p;
+    //memset(&chatted, 0, sizeof(unsigned char)*(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8));
+    chatted_arraylen = 0;
+    if (arraysize > (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) {
+       throw DecodeError();
+    }
+  
+    if (arraysize > buffersize)
+        throw DecodeError();
+    memcpy(&chatted, p, arraysize*sizeof(char));
+    buffersize -= arraysize;
+    p += arraysize;
+    chatted_arraylen = arraysize;
+	}
+
+	if (dirtyflag[EMOTION_ASC_DATING>>3]&(1<<(EMOTION_ASC_DATING&0x7))) {  
+    if (1 > buffersize)
+        throw DecodeError();
+    arraysize = *p;
+    --buffersize;
+    ++p;
+    //memset(&dating, 0, sizeof(unsigned char)*(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8));
+    dating_arraylen = 0;
+    if (arraysize > (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) {
+       throw DecodeError();
+    }
+  
+    if (arraysize > buffersize)
+        throw DecodeError();
+    memcpy(&dating, p, arraysize*sizeof(char));
+    buffersize -= arraysize;
+    p += arraysize;
+    dating_arraylen = arraysize;
+	}
+
+	if (dirtyflag[EMOTION_ASC_DATED>>3]&(1<<(EMOTION_ASC_DATED&0x7))) {  
+    if (1 > buffersize)
+        throw DecodeError();
+    arraysize = *p;
+    --buffersize;
+    ++p;
+    //memset(&dated, 0, sizeof(unsigned char)*(1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8));
+    dated_arraylen = 0;
+    if (arraysize > (1+(PROTO_MAX_ADMIRE_GENERAL_NUM-1)/8)) {
+       throw DecodeError();
+    }
+  
+    if (arraysize > buffersize)
+        throw DecodeError();
+    memcpy(&dated, p, arraysize*sizeof(char));
+    buffersize -= arraysize;
+    p += arraysize;
+    dated_arraylen = arraysize;
+	}
+
+	if (dirtyflag[EMOTION_ASC_PRESENT>>3]&(1<<(EMOTION_ASC_PRESENT&0x7))) {  
+    if (1 > buffersize)
+        throw DecodeError();
+    arraysize = *p;
+    --buffersize;
+    ++p;
+    //memset(&general_present, 0, sizeof(stPresentInfo)*PROTO_MAX_ADMIRE_PRESENT);
+    general_present_arraylen = 0;
+    if (arraysize > PROTO_MAX_ADMIRE_PRESENT) {
+       throw DecodeError();
+    }
+  
+    for (unsigned int i=0; i<arraysize; ++i) {
+        unsigned int buffersize2 = buffersize;
+        general_present[i].Decode(p, buffersize2);
+        p += (buffersize - buffersize2);
+        buffersize = buffersize2;
+    }
+    general_present_arraylen = arraysize;
+	}
+
+	if (dirtyflag[EMOTION_ASC_SHOP_PRESENT>>3]&(1<<(EMOTION_ASC_SHOP_PRESENT&0x7))) {    if (1 > buffersize)
+        throw DecodeError();
+    remain_present_time = *p;
     --buffersize;
     ++p;
 	}
@@ -1068,6 +1556,11 @@ XJCMD_SC_EMOTION_SYNCSC::XJCMD_SC_EMOTION_SYNCSC()
 void XJCMD_SC_EMOTION_SYNCSC::SetDefault()
 {
     dirtyflag_arraylen = 0;
+    jealousFlag_arraylen = 0;
+    chatted_arraylen = 0;
+    dating_arraylen = 0;
+    dated_arraylen = 0;
+    general_present_arraylen = 0;
 
 }
 
