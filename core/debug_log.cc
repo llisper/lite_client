@@ -1,4 +1,4 @@
-#include "core/debug_log.h"
+#include "debug_log.h"
 
 #include <cstdarg>
 #include <cstdio>

@@ -1,5 +1,5 @@
-#include "core/droid_holder.h"
-#include "core/debug_log.h"
+#include "debug_log.h"
+#include "droid_holder.h"
 #include "public/util.h"
 #include "public/droid.h"
 

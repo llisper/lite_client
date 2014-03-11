@@ -1,6 +1,6 @@
-#include "core/core.h"
-#include "core/debug_log.h"
-#include "core/droid_holder.h"
+#include "core.h"
+#include "debug_log.h"
+#include "droid_holder.h"
 #include "public/droid.h"
 #include "public/interface/interface.h"
 

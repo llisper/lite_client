@@ -11,6 +11,7 @@ include_directories(
 link_directories(${3rd_parties}/lib)
 
 add_subdirectory(core)
+add_subdirectory(droids)
 add_subdirectory(tests)
 
 
