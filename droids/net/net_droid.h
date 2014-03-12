@@ -19,11 +19,11 @@ class NetDroid :
   virtual int Init(DroidInit* dinit);
   virtual int Destroy(void);
 
-  virtual int OpenSession(sockaddr* sa, int sa_len, OpenSessionCallback cb, void *ctx);
+  virtual int OpenSession(sockaddr_in *sin, OpenSessionCallback cb, void *ctx);
   virtual int CloseSession(int id);
   virtual int Sniff(int id, const char*& dptr, size_t& sz);
   virtual int Drain(int id, size_t sz);
-  virtual int Send(int id, const char* dptr, size_t sz);
+  virtual int Send(int id, const char *dptr, size_t sz);
 
   struct Impl;
  private:

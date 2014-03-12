@@ -37,8 +37,8 @@ struct Core::Impl {
   Timers timers_;
 
   Impl(void)
-      : evbase_(NULL)
-        , evsig_(NULL)
+    : evbase_(NULL)
+      , evsig_(NULL)
   {}
 };
 
@@ -89,7 +89,7 @@ void* Core::Add(timeval* tv, TimerFunc cb, void *ctx, bool persist) {
   evtimer_add(evtimer, tv);
 
   DLOG("add timer, handle{%p}, tv{%d, %d}, persist{%d}",
-       evtimer, tv->tv_sec, tv->tv_usec, (int)persist);
+      evtimer, tv->tv_sec, tv->tv_usec, (int)persist);
   return evtimer;
 }
 
@@ -149,19 +149,19 @@ int Core::Run(std::vector<const char*>& argv) {
   droid_init.event = this;
 
   DroidConfig::iterator it = droid_config.begin(), 
-                        end = droid_config.end();
+    end = droid_config.end();
   for (; it != end; ++it) {
     std::string& name = (*it).first;
     std::string& path = (*it).second;
     DLOG("droid loading, {%s} {%s}", name.c_str(), path.c_str());
-    
+
     DroidHolder *holder = new DroidHolder(path);
     droid_init.dlog.Set(name.c_str(), g_core_dlog.sink());
     if (0 != (retcode = holder->Load(argv, &droid_init))) {
       DLOG("droid load error {%d}", retcode);
       return retcode;
     }
-  
+
     droid_holders.push_back(holder);
     DLOG("* droid loaded success, {%s} {%s}", name.c_str(), path.c_str());
   }
@@ -174,7 +174,7 @@ int Core::Run(std::vector<const char*>& argv) {
 
   std::for_each(droid_holders.begin(), droid_holders.end(), free_droid);
   droid_holders.clear();
-  
+
   std::for_each(timers.begin(), timers.end(), free_timer); 
   timers.clear();
 

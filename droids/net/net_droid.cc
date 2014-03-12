@@ -1,11 +1,14 @@
 #include "session.h"
+#include "use_dlog.h"
 #include "net_droid.h"
 #include "public/id_map.h"
 #include "public/util.h"
 
 #include <event2/bufferevent.h>
+#include <event2/util.h>
 
 #include <map>
+#include <netinet/in.h>
 
 typedef std::map<size_t, Session*> SessionMap;
 struct NetDroid::Impl {
@@ -41,6 +44,7 @@ NetDroid::~NetDroid(void) {
 
 int NetDroid::Init(DroidInit* dinit) {
   evbase = dinit->event->EventBase();
+  DLOG_INIT(dinit);
   return 0;
 }
 
@@ -50,13 +54,16 @@ int NetDroid::Destroy(void) {
   return 0;
 }
 
-int NetDroid::OpenSession(sockaddr* sa, int sa_len, OpenSessionCallback cb, void *ctx) {
+int NetDroid::OpenSession(sockaddr_in *sin, OpenSessionCallback cb, void *ctx) {
   size_t sid;
-  if (!sid_map.Next(sid))
-      return -1;
+  if (!sid_map.Next(sid)) {
+    DLOG("alloc sid failed");
+    return -1;
+  }
 
   bufferevent *bev = bufferevent_socket_new(evbase, -1, BEV_OPT_CLOSE_ON_FREE);
   if (!bev) {
+    DLOG("bufferevent_socket_new failed");
     sid_map.Free(sid);
     return -2;
   }
@@ -68,45 +75,52 @@ int NetDroid::OpenSession(sockaddr* sa, int sa_len, OpenSessionCallback cb, void
   pending_conn->ctx = ctx;
   bufferevent_setcb(bev, NULL, NULL, bev_event, pending_conn);
 
-  if (0 != bufferevent_socket_connect(bev, sa, sa_len)) {
+  if (0 != bufferevent_socket_connect(bev, (sockaddr*)sin, sizeof(*sin))) {
+    DLOG("bufferevent_socket_connect failed");
     delete pending_conn;
     sid_map.Free(sid);
     return -3;
   }
+
+  char addr[128];
+  DLOG("try to establish session {%d} to {%s:%p}", sid,
+       evutil_inet_ntop(sin->sin_family, sin, addr, sizeof(*sin)), 
+       sin->sin_port);
   return 0;
 }
 
 #define FIND_SESSION(id) ({ \
     SessionMap::iterator it = session_map.find(id); \
     if (it == session_map.end()) \
-        return -1; \
+    return -1; \
     (*it).second;})
 
 int NetDroid::CloseSession(int id) {
-    SessionMap::iterator it = session_map.find(id);
-    if (it == session_map.end()) 
-        return -1; 
+  SessionMap::iterator it = session_map.find(id);
+  if (it == session_map.end()) 
+    return -1; 
 
-    Session *s = (*it).second;
-    sid_map.Free(s->sid());
-    delete s;
-    session_map.erase(it);
-    return 0;
+  Session *s = (*it).second;
+  DLOG("close session {%d}", s->sid());
+  sid_map.Free(s->sid());
+  delete s;
+  session_map.erase(it);
+  return 0;
 }
 
 int NetDroid::Sniff(int id, const char*& dptr, size_t& sz) {
-    Session *s = FIND_SESSION(id);
-    return s->Sniff(dptr, sz);
+  Session *s = FIND_SESSION(id);
+  return s->Sniff(dptr, sz);
 }
 
 int NetDroid::Drain(int id, size_t sz) {
-    Session *s = FIND_SESSION(id);
-    return s->Drain(sz);
+  Session *s = FIND_SESSION(id);
+  return s->Drain(sz);
 }
 
 int NetDroid::Send(int id, const char* dptr, size_t sz) {
-    Session *s = FIND_SESSION(id);
-    return s->Send(dptr, sz);
+  Session *s = FIND_SESSION(id);
+  return s->Send(dptr, sz);
 }
 
 #undef FIND_SESSION
@@ -130,10 +144,12 @@ void bev_event(bufferevent *bev, short what, void *ctx) {
     net_impl->session_map_[sid] = s;
 
     cb(sid, cbarg);
+    DLOG("session {%d} established", sid);
   } else {
     cb(-1, cbarg); 
     net_impl->sid_map_.Free(sid);
     bufferevent_free(bev);
+    DLOG("session {%d} failed to establish, what {%d}", sid, what);
   }
   delete pending_conn;
 }
