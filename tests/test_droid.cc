@@ -22,45 +22,52 @@ class TestDroid :
   virtual ~TestDroid(void) {}
 
   virtual int Init(DroidInit *dinit) {
-    printf("Init TestDroid\n");
-    dinit_ = dinit;
+    timer_ = dinit->timer;
+    if_set_ = dinit->if_set;
+    event_ = dinit->event;
+    dlog_ = dinit->dlog;
+
+    dlog_("Init TestDroid");
     int retcode;
     // add a timer
     timeval tv = { 1, 0 };
-    h_timer_ = dinit_->timer->Add(&tv, TestTimer, this, true);
+    h_timer_ = timer_->Add(&tv, TestTimer, this, true);
     if (!h_timer_) 
       return -1;
 
     // add an interface
-    if (0 != (retcode = dinit_->if_set->Add("TestI", this)))
+    if (0 != (retcode = if_set_->Add("TestI", this)))
       return retcode;
 
     return 0;
   }
 
   virtual int Destroy(void) {
-    printf("Destroy TestDroid\n");
-    dinit_->timer->Del(h_timer_);
+    dlog_("Destroy TestDroid");
+    timer_->Del(h_timer_);
     return 0;
   }
 
   void OnTimer(void) {
-    TestInterface *test_i = (TestInterface*)dinit_->if_set->Get("TestI");
+    TestInterface *test_i = (TestInterface*)if_set_->Get("TestI");
     assert(test_i);
 
     char name[6] = {0};
     for (int i = 0; i < 5; ++i)
       name[i] = (char)(rand() % 26 + 97);
-    printf("OnTimer, get{%s}, set{%s}\n", test_i->name().c_str(), name);
+    dlog_("OnTimer, get{%s}, set{%s}", test_i->name().c_str(), name);
     test_i->set_name(name);
   }
 
   virtual const std::string& name(void) { return name_; }
   virtual void set_name(const std::string& v) { name_ = v; }
  private:
-  DroidInit *dinit_;
   void *h_timer_;
   std::string name_;
+  ITimer *timer_;
+  IInterfaceSet *if_set_;
+  IEvent *event_;
+  DLog dlog_;
 };
 
 extern "C" Droid* onload(std::vector<const char*>& argv) {

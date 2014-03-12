@@ -5,14 +5,14 @@
 #include <vector>
 
 struct Interface;
-typedef void (*debug_log)(const char* log);
+typedef void (*LogSink)(const char* name, const char* log);
 
 class Core : 
     public ITimer, 
     public IInterfaceSet,
     public IEvent {
  public:
-  Core(debug_log dlog_func);
+  Core(LogSink log_sink);
   virtual ~Core(void);
 
   int Run(std::vector<const char*>& argv);

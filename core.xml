@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <core>
-  <droid path="./tests/test_droid.so"/>
-  <droid path="./droids/net/net_droid.so"/>
+  <droid name="test" path="./tests/test_droid.so"/>
+  <droid name="net" path="./droids/net/net_droid.so"/>
 </core>

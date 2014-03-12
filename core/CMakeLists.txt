@@ -2,7 +2,10 @@ file(GLOB CORE_SOURCE
   *.h *.cc
   )
 
-add_executable(core ${CORE_SOURCE})
+add_executable(core 
+    ${CORE_SOURCE}
+    ${CMAKE_SOURCE_DIR}/public/dlog.cc
+    )
 
 set_target_properties(core PROPERTIES 
   COMPILE_FLAGS ${cflags}

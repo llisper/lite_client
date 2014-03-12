@@ -1,6 +1,7 @@
 #ifndef LC_UTIL_H
 #define LC_UTIL_H
 
+#include "dlog.h"
 #include <string>
 
 struct event_base;
@@ -38,6 +39,7 @@ struct DroidInit {
   ITimer *timer;
   IInterfaceSet *if_set;
   IEvent *event;
+  DLog dlog;
 };
 
 #endif // LC_UTIL_H

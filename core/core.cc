@@ -18,6 +18,8 @@
 #include <unistd.h>
 #include <cstring>
 
+DLog g_core_dlog;
+
 struct TimerCtx {
   event* ev;
   TimerFunc real_cb;
@@ -27,6 +29,7 @@ struct TimerCtx {
 typedef std::vector<DroidHolder*> DroidHolders;
 typedef std::map<std::string, Interface*> InterfaceMap;
 typedef std::map<event*, TimerCtx*> Timers;
+typedef std::vector<std::pair<std::string, std::string> > DroidConfig;
 
 struct Core::Impl {
   DroidHolders droid_holders_;
@@ -46,7 +49,7 @@ static void signal_handler(evutil_socket_t, short, void*);
 static void timer_cb(evutil_socket_t, short, void*);
 static void free_timer(Timers::value_type& v);
 static void free_droid(DroidHolder* holder);
-static int parse_droid_paths(const char* config, std::vector<std::string>& droid_paths);
+static int parse_droid_paths(const char* config, DroidConfig& droid_config);
 static void xml_starthandler(void *userData, const XML_Char *name, const XML_Char **atts);
 
 #define droid_holders (pimpl_->droid_holders_)
@@ -55,9 +58,9 @@ static void xml_starthandler(void *userData, const XML_Char *name, const XML_Cha
 #define evsig (pimpl_->evsig_)
 #define timers (pimpl_->timers_)
 
-Core::Core(debug_log dlog_func) : pimpl_(new Core::Impl) {
+Core::Core(LogSink log_sink) : pimpl_(new Core::Impl) {
   // initial log
-  DLOG_SET(dlog_func); 
+  DLOG_SET("core", log_sink); 
   // initial base
   evbase = event_base_new();
   // set signal handler
@@ -135,8 +138,8 @@ int Core::Run(std::vector<const char*>& argv) {
   DLOG("core start");
 
   int retcode;
-  std::vector<std::string> droid_paths;
-  if (0 != (retcode = parse_droid_paths(argv[0], droid_paths))) {
+  DroidConfig droid_config;
+  if (0 != (retcode = parse_droid_paths(argv[0], droid_config))) {
     DLOG("parse_droid_paths error {%d}", retcode);
     return retcode; 
   }
@@ -147,20 +150,22 @@ int Core::Run(std::vector<const char*>& argv) {
   droid_init.if_set = this;
   droid_init.event = this;
 
-  std::vector<std::string>::iterator it = droid_paths.begin(), 
-                                     end = droid_paths.end();
+  DroidConfig::iterator it = droid_config.begin(), 
+                        end = droid_config.end();
   for (; it != end; ++it) {
-    std::string& path = *it;
-    DLOG("droid loading, {%s}", path.c_str());
+    std::string& name = (*it).first;
+    std::string& path = (*it).second;
+    DLOG("droid loading, {%s} {%s}", name.c_str(), path.c_str());
     
     DroidHolder *holder = new DroidHolder(path);
+    droid_init.dlog.Set(name.c_str(), g_core_dlog.sink());
     if (0 != (retcode = holder->Load(argv, &droid_init))) {
       DLOG("droid load error {%d}", retcode);
       return retcode;
     }
   
     droid_holders.push_back(holder);
-    DLOG("droid loaded, {%s}", path.c_str());
+    DLOG("* droid loaded success, {%s} {%s}", name.c_str(), path.c_str());
   }
 
   DLOG("core initialized, running...");
@@ -208,22 +213,24 @@ void free_droid(DroidHolder* holder) {
 }
 
 void xml_starthandler(void *userData, const XML_Char *name, const XML_Char **atts) {
-  std::vector<std::string>* droid_paths = (std::vector<std::string>*)userData;
+  DroidConfig* droid_config = (DroidConfig*)userData;
   if (strcmp(name, "droid") == 0) {
-    if (atts[0] && strcmp(atts[0], "path") == 0) {
-      const char *file = atts[1];
+    if ((atts[0] && strcmp(atts[0], "name") == 0) &&
+        (atts[2] && strcmp(atts[2], "path") == 0)) {
+      const char *name = atts[1];
+      const char *file = atts[3];
       if (0 == access(file, R_OK | X_OK))
-        droid_paths->push_back(file);
+        droid_config->push_back(std::make_pair(name, file));
     }
   }
 }
 
-int parse_droid_paths(const char* config, std::vector<std::string>& droid_paths) {
+int parse_droid_paths(const char* config, DroidConfig& droid_config) {
   XML_Parser xml_parser = XML_ParserCreate("UTF-8");
   if (!xml_parser)
     return -1;
 
-  XML_SetUserData(xml_parser, &droid_paths);
+  XML_SetUserData(xml_parser, &droid_config);
   XML_SetStartElementHandler(xml_parser, xml_starthandler);
 
   int fd = open(config, O_RDONLY);

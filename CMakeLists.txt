@@ -16,21 +16,3 @@ add_subdirectory(core)
 add_subdirectory(droids)
 add_subdirectory(tests)
 
-
-#add_subdirectory(Proto)
-#
-#add_executable(lite_client
-#    client.cc
-#    )
-#
-#set_target_properties(lite_client
-#    PROPERTIES COMPILE_FLAGS ${cflags}
-#    )
-#
-#target_link_libraries(lite_client
-#    proto
-#    event
-#    pthread
-#    rt
-#    )
-#
