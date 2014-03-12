@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdlib>
 
+#include "use_dlog.h"
 #include "public/droid.h"
 #include "public/util.h"
 #include "public/interface/interface.h"
@@ -25,9 +26,9 @@ class TestDroid :
     timer_ = dinit->timer;
     if_set_ = dinit->if_set;
     event_ = dinit->event;
-    dlog_ = dinit->dlog;
+    DLOG_INIT(dinit);
 
-    dlog_("Init TestDroid");
+    DLOG("Init TestDroid");
     int retcode;
     // add a timer
     timeval tv = { 1, 0 };
@@ -43,7 +44,7 @@ class TestDroid :
   }
 
   virtual int Destroy(void) {
-    dlog_("Destroy TestDroid");
+    DLOG("Destroy TestDroid");
     timer_->Del(h_timer_);
     return 0;
   }
@@ -55,7 +56,7 @@ class TestDroid :
     char name[6] = {0};
     for (int i = 0; i < 5; ++i)
       name[i] = (char)(rand() % 26 + 97);
-    dlog_("OnTimer, get{%s}, set{%s}", test_i->name().c_str(), name);
+    DLOG("OnTimer, get{%s}, set{%s}", test_i->name().c_str(), name);
     test_i->set_name(name);
   }
 
@@ -67,7 +68,6 @@ class TestDroid :
   ITimer *timer_;
   IInterfaceSet *if_set_;
   IEvent *event_;
-  DLog dlog_;
 };
 
 extern "C" Droid* onload(std::vector<const char*>& argv) {

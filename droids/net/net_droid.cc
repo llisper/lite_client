@@ -9,10 +9,11 @@
 
 typedef std::map<size_t, Session*> SessionMap;
 struct NetDroid::Impl {
-  NetDroid* ref__;
-  SessionMap session_map__;
-  event_base *evbase__;
-  IDMap<SHRT_MAX> sid_map__;
+  NetDroid* ref_;
+  SessionMap session_map_;
+  event_base *evbase_;
+  IDMap<SHRT_MAX> sid_map_;
+  DLog dlog_;
 };
 
 struct PendingConn {
@@ -27,36 +28,36 @@ static void bev_event(bufferevent *bev, short what, void *ctx);
 
 NetDroid::NetDroid(void) {
   pimpl_ = new Impl;
-  pimpl_->ref__ = this;
+  pimpl_->ref_ = this;
 }
 
 NetDroid::~NetDroid(void) {
   delete pimpl_;
 }
 
-#define session_map_ (pimpl_->session_map__)
-#define evbase_ (pimpl_->evbase__)
-#define sid_map_ (pimpl_->sid_map__)
+#define session_map (pimpl_->session_map_)
+#define evbase (pimpl_->evbase_)
+#define sid_map (pimpl_->sid_map_)
 
 int NetDroid::Init(DroidInit* dinit) {
-  evbase_ = dinit->event->EventBase();
+  evbase = dinit->event->EventBase();
   return 0;
 }
 
 int NetDroid::Destroy(void) {
-  std::for_each(session_map_.begin(), session_map_.end(), close_session);
-  session_map_.clear();
+  std::for_each(session_map.begin(), session_map.end(), close_session);
+  session_map.clear();
   return 0;
 }
 
 int NetDroid::OpenSession(sockaddr* sa, int sa_len, OpenSessionCallback cb, void *ctx) {
   size_t sid;
-  if (!sid_map_.Next(sid))
+  if (!sid_map.Next(sid))
       return -1;
 
-  bufferevent *bev = bufferevent_socket_new(evbase_, -1, BEV_OPT_CLOSE_ON_FREE);
+  bufferevent *bev = bufferevent_socket_new(evbase, -1, BEV_OPT_CLOSE_ON_FREE);
   if (!bev) {
-    sid_map_.Free(sid);
+    sid_map.Free(sid);
     return -2;
   }
 
@@ -69,27 +70,27 @@ int NetDroid::OpenSession(sockaddr* sa, int sa_len, OpenSessionCallback cb, void
 
   if (0 != bufferevent_socket_connect(bev, sa, sa_len)) {
     delete pending_conn;
-    sid_map_.Free(sid);
+    sid_map.Free(sid);
     return -3;
   }
   return 0;
 }
 
 #define FIND_SESSION(id) ({ \
-    SessionMap::iterator it = session_map_.find(id); \
-    if (it == session_map_.end()) \
+    SessionMap::iterator it = session_map.find(id); \
+    if (it == session_map.end()) \
         return -1; \
     (*it).second;})
 
 int NetDroid::CloseSession(int id) {
-    SessionMap::iterator it = session_map_.find(id);
-    if (it == session_map_.end()) 
+    SessionMap::iterator it = session_map.find(id);
+    if (it == session_map.end()) 
         return -1; 
 
     Session *s = (*it).second;
-    sid_map_.Free(s->sid());
+    sid_map.Free(s->sid());
     delete s;
-    session_map_.erase(it);
+    session_map.erase(it);
     return 0;
 }
 
@@ -109,9 +110,9 @@ int NetDroid::Send(int id, const char* dptr, size_t sz) {
 }
 
 #undef FIND_SESSION
-#undef session_map_
-#undef evbase_
-#undef sid_map_
+#undef session_map
+#undef evbase
+#undef sid_map
 
 void close_session(SessionMap::value_type& v) {
   delete v.second;
@@ -125,13 +126,13 @@ void bev_event(bufferevent *bev, short what, void *ctx) {
   void *cbarg = pending_conn->ctx;
 
   if (what & BEV_EVENT_CONNECTED) {
-    Session *s = new Session(sid, net_impl->ref__, bev);
-    net_impl->session_map__[sid] = s;
+    Session *s = new Session(sid, net_impl->ref_, bev);
+    net_impl->session_map_[sid] = s;
 
     cb(sid, cbarg);
   } else {
     cb(-1, cbarg); 
-    net_impl->sid_map__.Free(sid);
+    net_impl->sid_map_.Free(sid);
     bufferevent_free(bev);
   }
   delete pending_conn;

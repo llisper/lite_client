@@ -2,6 +2,8 @@ file(GLOB CORE_SOURCE
   *.h *.cc
   )
 
+use_dlog(core CORE_SOURCE)
+
 add_executable(core 
     ${CORE_SOURCE}
     ${CMAKE_SOURCE_DIR}/public/dlog.cc

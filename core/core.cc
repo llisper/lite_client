@@ -1,5 +1,5 @@
 #include "core.h"
-#include "debug_log.h"
+#include "use_dlog.h"
 #include "droid_holder.h"
 #include "public/droid.h"
 #include "public/interface/interface.h"
@@ -17,8 +17,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <cstring>
-
-DLog g_core_dlog;
 
 struct TimerCtx {
   event* ev;
