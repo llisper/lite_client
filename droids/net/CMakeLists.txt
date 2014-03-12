@@ -12,6 +12,13 @@ add_library(net_droid SHARED
     ${public_sources}
     )
 
+target_link_libraries(net_droid
+    event
+    )
+
 set_target_properties(net_droid PROPERTIES
+  COMPILE_FLAGS "${cflags} -fPIC"
   PREFIX ""
   )
+
+

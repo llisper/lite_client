@@ -7,8 +7,10 @@ class NetDroid;
 struct bufferevent;
 class Session {
  public:
-  Session(short sid, NetDroid *nd, bufferevent *bev);
+  Session(size_t sid, NetDroid *nd, bufferevent *bev);
   ~Session(void);
+
+  size_t sid(void) const { return sid_; }
 
   int Sniff(const char*& dptr, size_t& sz);
 
@@ -16,7 +18,10 @@ class Session {
 
   int Send(const char* dptr, size_t sz);
  private:
-  short sid_;
+  static void bev_event(bufferevent *bev, short what, void *ctx);
+  static void bev_read(bufferevent *bev, void *ctx);
+
+  size_t sid_;
   CBuf cbuf_;
   NetDroid *nd_;
   bufferevent *bev_;

@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+project(lite_client)
+
 set(cflags "-g -Wall")
 set(3rd_parties ${CMAKE_SOURCE_DIR}/3rd_parties)
 

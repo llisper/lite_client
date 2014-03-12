@@ -40,6 +40,7 @@ NetDroid::~NetDroid(void) {
 
 int NetDroid::Init(DroidInit* dinit) {
   evbase_ = dinit->event->EventBase();
+  return 0;
 }
 
 int NetDroid::Destroy(void) {
@@ -85,7 +86,9 @@ int NetDroid::CloseSession(int id) {
     if (it == session_map_.end()) 
         return -1; 
 
-    delete (*it).second;
+    Session *s = (*it).second;
+    sid_map_.Free(s->sid());
+    delete s;
     session_map_.erase(it);
     return 0;
 }
