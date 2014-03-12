@@ -1,7 +1,6 @@
 #include "core.h"
 
-#include <cassert>
-#include <cstdio>
+#include <cstring>
 #include <vector>
 
 static void dlog_sink(const char* name, const char* log);
@@ -15,10 +14,14 @@ int main(int argc, char* argv[]) {
   return core.Run(arg_vector);
 }
 
-void dlog_output(const char* log) {
-  fprintf(stdout, "\e[1;34m%s\e[0m\n", log);
-}
-
 void dlog_sink(const char* name, const char* log) {
-  fprintf(stdout, "\e[1;34m%s\e[0m\n", log);
+  const char *color = "\e[0m";
+  if (!strcmp(name, "core"))
+    color = "\e[0;34m";
+  else if (!strcmp(name, "test"))
+    color = "\e[0;33m";
+  else if (!strcmp(name, "net"))
+    color = "\e[0;32m";
+
+  fprintf(stdout, "%s%s\e[0m\n", color, log);
 }
