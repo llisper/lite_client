@@ -10,6 +10,9 @@
 #include <event2/bufferevent.h>
 
 #include <map>
+#include <climits>
+#include <algorithm>
+#include <cstring>
 #include <errno.h>
 #include <netinet/in.h>
 

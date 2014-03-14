@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <vector>
+#include <cstdio>
 
 static void dlog_sink(const char* name, const char* log);
 
