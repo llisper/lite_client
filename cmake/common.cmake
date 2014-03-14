@@ -30,3 +30,11 @@ macro(r_add_dirs)
     add_subdirectory(${dir})
   endforeach(ml ${cmakelists})
 endmacro(r_add_dirs)
+
+macro(add_droid target_name)
+  add_library(${target_name} SHARED ${ARGN})
+  set_target_properties(${target_name} PROPERTIES 
+    COMPILE_FLAGS ${cflags}
+    PREFIX ""
+    )
+endmacro(add_droid target_name)

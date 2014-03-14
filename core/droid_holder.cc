@@ -14,7 +14,7 @@ DroidHolder::DroidHolder(const std::string& module_path)
     mptr_ = NULL;
   }
 
-int DroidHolder::Load(std::vector<const char*>& argv, DroidInit *dinit) {
+int DroidHolder::Load(std::vector<const char*>& argv, DroidUtil *util) {
   mptr_ = dlopen(module_path_.c_str(), RTLD_NOW);
   if (NULL == mptr_) {
     DLOG("load {%s} failed: {%s}", module_path_.c_str(), dlerror());
@@ -28,7 +28,8 @@ int DroidHolder::Load(std::vector<const char*>& argv, DroidInit *dinit) {
     return -2;
 
   droid_ = f_onload(argv);
-  return droid_ ? droid_->Init(dinit) : -3;
+  droid_->util_ = util;
+  return droid_ ? droid_->Init() : -3;
 }
 
 DroidHolder::~DroidHolder(void) {

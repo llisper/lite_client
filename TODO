@@ -1,0 +1,6 @@
+* argv consume helper
+* define arg in xml for each droids
+* droids start sequence
+* droid start on require
+* droid namespace
+* remove interface when a droid is offline

@@ -128,6 +128,11 @@ int Core::Add(const std::string& if_name, Interface *interface) {
   return 0;
 }
 
+void Core::Del(const std::string& if_name) {
+  if_map.erase(if_name);
+  DLOG("del interface {%s}", if_name.c_str());
+}
+
 event_base* Core::EventBase(void) {
   return evbase;
 }
@@ -143,10 +148,10 @@ int Core::Run(std::vector<const char*>& argv) {
   }
   argv.erase(argv.begin());
 
-  DroidInit droid_init;
-  droid_init.timer = this;
-  droid_init.if_set = this;
-  droid_init.event = this;
+  DroidUtil droid_util;
+  droid_util.timer = this;
+  droid_util.if_set = this;
+  droid_util.event = this;
 
   DroidConfig::iterator it = droid_config.begin(), 
     end = droid_config.end();
@@ -156,8 +161,8 @@ int Core::Run(std::vector<const char*>& argv) {
     DLOG("droid loading, {%s} {%s}", name.c_str(), path.c_str());
 
     DroidHolder *holder = new DroidHolder(path);
-    droid_init.dlog.Set(name.c_str(), g_core_dlog.sink());
-    if (0 != (retcode = holder->Load(argv, &droid_init))) {
+    droid_util.dlog.Set(name.c_str(), g_core_dlog.sink());
+    if (0 != (retcode = holder->Load(argv, &droid_util))) {
       DLOG("droid load error {%d}", retcode);
       return retcode;
     }

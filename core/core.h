@@ -25,6 +25,8 @@ class Core :
 
   virtual int Add(const std::string& if_name, Interface *interface);
 
+  virtual void Del(const std::string& if_name);
+
   virtual event_base* EventBase(void);
  private:
   struct Impl;

@@ -3,12 +3,15 @@
 #include "net_droid.h"
 #include "public/id_map.h"
 #include "public/util.h"
+#include "public/export.h"
 
 #include <event2/bufferevent.h>
 #include <event2/util.h>
 
 #include <map>
 #include <netinet/in.h>
+
+EXPORT_DROID_NOARG(NetDroid);
 
 typedef std::map<size_t, Session*> SessionMap;
 struct NetDroid::Impl {
@@ -42,15 +45,17 @@ NetDroid::~NetDroid(void) {
 #define evbase (pimpl_->evbase_)
 #define sid_map (pimpl_->sid_map_)
 
-int NetDroid::Init(DroidInit* dinit) {
-  evbase = dinit->event->EventBase();
-  DLOG_INIT(dinit);
+int NetDroid::Init(void) {
+  evbase = util()->event->EventBase();
+  DLOG_INIT(util());
+  ADD_INTERFACE("INet");
   return 0;
 }
 
 int NetDroid::Destroy(void) {
   std::for_each(session_map.begin(), session_map.end(), close_session);
   session_map.clear();
+  util()->if_set->Del("INet");
   return 0;
 }
 
@@ -95,7 +100,7 @@ int NetDroid::OpenSession(sockaddr_in *sin, OpenSessionCallback cb, void *ctx) {
     return -1; \
     (*it).second;})
 
-int NetDroid::CloseSession(int id) {
+int NetDroid::CloseSession(size_t id) {
   SessionMap::iterator it = session_map.find(id);
   if (it == session_map.end()) 
     return -1; 
@@ -108,17 +113,17 @@ int NetDroid::CloseSession(int id) {
   return 0;
 }
 
-int NetDroid::Sniff(int id, const char*& dptr, size_t& sz) {
+int NetDroid::Sniff(size_t id, const char*& dptr, size_t& sz) {
   Session *s = FIND_SESSION(id);
   return s->Sniff(dptr, sz);
 }
 
-int NetDroid::Drain(int id, size_t sz) {
+int NetDroid::Drain(size_t id, size_t sz) {
   Session *s = FIND_SESSION(id);
   return s->Drain(sz);
 }
 
-int NetDroid::Send(int id, const char* dptr, size_t sz) {
+int NetDroid::Send(size_t id, const char* dptr, size_t sz) {
   Session *s = FIND_SESSION(id);
   return s->Send(dptr, sz);
 }

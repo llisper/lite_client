@@ -6,9 +6,9 @@
 #include <event2/buffer.h>
 #include <event2/bufferevent.h>
 
-#include "Proto/ProtoLogin.h"
-#include "Proto/CProto_Command.h"
-#include "Proto/ProtoPack_Package.h"
+#include "ProtoLogin.h"
+#include "CProto_Command.h"
+#include "ProtoPack_Package.h"
 
 #define SERVER_ADDR "10.1.152.64:5009"
 
@@ -73,6 +73,7 @@ static void event_cb(bufferevent* bev, short what, void* ctx)
         CProto::packc packet;
         packet.Init(CProto::XJCMD_CSC_VERSION, buffer);
         CProto::XJCMD_CSC_VERSIONCS* body = packet.GetXJCMD_CSC_VERSIONCS();
+
         strcpy(body->user, user_name);
         body->user_arraylen = strlen(body->user);
         strcpy(body->sign, "i am llisper");

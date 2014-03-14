@@ -25,7 +25,9 @@ class IInterfaceSet {
 
   virtual Interface* Get(const std::string& if_name) = 0;
 
-  virtual int Add(const std::string& if_name, Interface *interface) = 0;
+  virtual int  Add(const std::string& if_name, Interface *interface) = 0;
+
+  virtual void Del(const std::string& if_name) = 0;
 };
 
 class IEvent {
@@ -35,7 +37,7 @@ class IEvent {
   virtual event_base* EventBase(void) = 0;
 };
 
-struct DroidInit {
+struct DroidUtil {
   ITimer *timer;
   IInterfaceSet *if_set;
   IEvent *event;

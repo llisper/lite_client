@@ -5,7 +5,7 @@
 #include <vector>
 
 class Droid;
-struct DroidInit;
+struct DroidUtil;
 class DroidHolder {
  public:
   DroidHolder(const std::string& module_path);
@@ -15,7 +15,7 @@ class DroidHolder {
    * @brief
    *  载入droid.so模块
    */
-  int  Load(std::vector<const char*>& argv, DroidInit *dinit);
+  int  Load(std::vector<const char*>& argv, DroidUtil *util);
 
   /**
    * @brief

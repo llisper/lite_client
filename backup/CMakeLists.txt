@@ -1,15 +1,13 @@
-cmake_minimum_required(VERSION 2.8)
+file(GLOB proto_sources
+  ../droids/protocol/xjcard/protocol_src/*.cpp
+  )
 
-set(cflags "-g -Wall")
-set(3rd_parties ${CMAKE_SOURCE_DIR}/3rd_parties)
-
-include_directories(${3rd_parties}/include)
-link_directories(${3rd_parties}/lib)
-
-add_subdirectory(Proto)
+include_directories(../droids/protocol/xjcard/protocol_src)
+message(STATUS ${proto_sources})
 
 add_executable(lite_client
     client.cc
+    ${proto_sources}
     )
 
 set_target_properties(lite_client
@@ -17,7 +15,6 @@ set_target_properties(lite_client
     )
 
 target_link_libraries(lite_client
-    proto
     event
     pthread
     rt

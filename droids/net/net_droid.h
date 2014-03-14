@@ -6,7 +6,6 @@
 
 #include <map>
 
-struct DroidInit;
 struct bufferevent;
 
 class NetDroid : 
@@ -16,14 +15,14 @@ class NetDroid :
   NetDroid(void);
   virtual ~NetDroid(void);
 
-  virtual int Init(DroidInit* dinit);
+  virtual int Init(void);
   virtual int Destroy(void);
 
   virtual int OpenSession(sockaddr_in *sin, OpenSessionCallback cb, void *ctx);
-  virtual int CloseSession(int id);
-  virtual int Sniff(int id, const char*& dptr, size_t& sz);
-  virtual int Drain(int id, size_t sz);
-  virtual int Send(int id, const char *dptr, size_t sz);
+  virtual int CloseSession(size_t id);
+  virtual int Sniff(size_t id, const char*& dptr, size_t& sz);
+  virtual int Drain(size_t id, size_t sz);
+  virtual int Send(size_t id, const char *dptr, size_t sz);
 
   struct Impl;
  private:

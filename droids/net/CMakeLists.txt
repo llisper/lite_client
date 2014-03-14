@@ -10,18 +10,12 @@ set(public_sources
   ${CMAKE_SOURCE_DIR}/public/dlog.cc
   )
 
-add_library(net_droid SHARED 
+add_droid(net 
   ${net_droid_sources}
   ${public_sources}
   )
 
-target_link_libraries(net_droid
+target_link_libraries(net
   event
   )
-
-set_target_properties(net_droid PROPERTIES
-  COMPILE_FLAGS "${cflags} -fPIC"
-  PREFIX ""
-  )
-
 

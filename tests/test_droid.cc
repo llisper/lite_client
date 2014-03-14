@@ -6,6 +6,7 @@
 #include "use_dlog.h"
 #include "public/droid.h"
 #include "public/util.h"
+#include "public/export.h"
 #include "public/interface/interface.h"
 
 static void TestTimer(void*);
@@ -22,14 +23,13 @@ class TestDroid :
  public:
   virtual ~TestDroid(void) {}
 
-  virtual int Init(DroidInit *dinit) {
-    timer_ = dinit->timer;
-    if_set_ = dinit->if_set;
-    event_ = dinit->event;
-    DLOG_INIT(dinit);
+  virtual int Init(void) {
+    timer_ = util()->timer;
+    if_set_ = util()->if_set;
+    event_ = util()->event;
+    DLOG_INIT(util());
 
     DLOG("Init TestDroid");
-    int retcode;
     // add a timer
     timeval tv = { 1, 0 };
     h_timer_ = timer_->Add(&tv, TestTimer, this, true);
@@ -37,9 +37,7 @@ class TestDroid :
       return -1;
 
     // add an interface
-    if (0 != (retcode = if_set_->Add("TestI", this)))
-      return retcode;
-
+    ADD_INTERFACE("TestI");
     return 0;
   }
 
@@ -70,15 +68,9 @@ class TestDroid :
   IEvent *event_;
 };
 
-extern "C" Droid* onload(std::vector<const char*>& argv) {
-  return new TestDroid;
-}
-
-extern "C" void unload(Droid* d) {
-  delete d;
-}
-
 void TestTimer(void *ctx) {
   ((TestDroid*)ctx)->OnTimer();
 }
+
+EXPORT_DROID_NOARG(TestDroid);
 
