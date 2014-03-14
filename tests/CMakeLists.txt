@@ -1,8 +1,14 @@
-set(source_list test_droid.cc)
-use_dlog(test_droid source_list)
+use_dlog(test_droid test_dlog_cc)
 
-add_library(test_droid SHARED ${source_list})
-set_target_properties(test_droid PROPERTIES
-  COMPILE_FLAGS ${cflags}
-  PREFIX ""
+add_droid(test_droid 
+  test_droid.cc
+  ${test_dlog_cc}
+  )
+
+add_executable(echo_svr echo_svr.cc)
+target_link_libraries(echo_svr event rt)
+
+add_droid(test_net
+  test_net.cc
+  ${test_dlog_cc}
   )

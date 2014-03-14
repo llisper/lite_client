@@ -5,10 +5,12 @@
 #include "public/util.h"
 #include "public/export.h"
 
-#include <event2/bufferevent.h>
 #include <event2/util.h>
+#include <event2/event.h>
+#include <event2/bufferevent.h>
 
 #include <map>
+#include <errno.h>
 #include <netinet/in.h>
 
 EXPORT_DROID_NOARG(NetDroid);
@@ -87,9 +89,9 @@ int NetDroid::OpenSession(sockaddr_in *sin, OpenSessionCallback cb, void *ctx) {
     return -3;
   }
 
-  char addr[128];
-  DLOG("try to establish session {%d} to {%s:%p}", sid,
-       evutil_inet_ntop(sin->sin_family, sin, addr, sizeof(*sin)), 
+  char addr[INET_ADDRSTRLEN];
+  DLOG("try to establish session {%d} to {%s:%d}", sid,
+       evutil_inet_ntop(sin->sin_family, &(sin->sin_addr), addr, INET_ADDRSTRLEN), 
        sin->sin_port);
   return 0;
 }
@@ -150,12 +152,18 @@ void bev_event(bufferevent *bev, short what, void *ctx) {
 
     cb(sid, cbarg);
     DLOG("session {%d} established", sid);
+    return;
+  } else if (what & BEV_EVENT_ERROR) {
+    int errcode = evutil_socket_geterror();
+    const char* error = evutil_socket_error_to_string(errcode);
+    DLOG("session {%d} failed to establish, what {%s}", sid, error); 
   } else {
-    cb(-1, cbarg); 
-    net_impl->sid_map_.Free(sid);
-    bufferevent_free(bev);
     DLOG("session {%d} failed to establish, what {%d}", sid, what);
   }
+
+  cb(-1, cbarg); 
+  net_impl->sid_map_.Free(sid);
+  bufferevent_free(bev);
   delete pending_conn;
 }
 

@@ -1,13 +1,6 @@
-file(GLOB proto_sources
-  ../droids/protocol/xjcard/protocol_src/*.cpp
-  )
-
-include_directories(../droids/protocol/xjcard/protocol_src)
-message(STATUS ${proto_sources})
-
+include_directories(${CMAKE_SOURCE_DIR}/droids/xjcard/protocol)
 add_executable(lite_client
     client.cc
-    ${proto_sources}
     )
 
 set_target_properties(lite_client
@@ -18,5 +11,6 @@ target_link_libraries(lite_client
     event
     pthread
     rt
+    xjcard_protocol
     )
 

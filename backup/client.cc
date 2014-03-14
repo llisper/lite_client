@@ -18,6 +18,7 @@ static void event_cb(bufferevent* bev, short what, void* ctx);
 static void recv_cb(bufferevent* bev, void* ctx);
 
 char user_name[128];
+char svr_addr[128];
 
 int main(int argc, char *argv[]) {
     event_base *base;
@@ -26,7 +27,11 @@ int main(int argc, char *argv[]) {
     sockaddr_in sin;
     int len = sizeof(sin);
 
-    strncpy(argv[1], user_name, 128);
+    strncpy(user_name, argv[1], 128);
+    if (argc < 3)
+      strncpy(svr_addr, SERVER_ADDR, 128);
+    else
+      strncpy(svr_addr, argv[2], 128);
 
     base = event_base_new();
 
@@ -37,9 +42,9 @@ int main(int argc, char *argv[]) {
     timeval period = { 1, 0 };
     evtimer_add(ev_tick, &period);
 
-    evutil_parse_sockaddr_port(SERVER_ADDR, (sockaddr*)&sin, &len);
+    evutil_parse_sockaddr_port(svr_addr, (sockaddr*)&sin, &len);
     bev = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
-	bufferevent_enable(bev, EV_WRITE|EV_READ);
+	  bufferevent_enable(bev, EV_WRITE|EV_READ);
     bufferevent_setcb(bev, recv_cb, NULL, event_cb, NULL);
     bufferevent_socket_connect(bev, (sockaddr*)&sin, len);
 
