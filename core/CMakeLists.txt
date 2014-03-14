@@ -19,3 +19,8 @@ target_link_libraries(core
   event
   expat
   )
+
+install(TARGETS core 
+  RUNTIME 
+  DESTINATION .
+  )

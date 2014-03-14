@@ -37,4 +37,35 @@ macro(add_droid target_name)
     COMPILE_FLAGS ${cflags}
     PREFIX ""
     )
+
+  # generate install command
+  string(REPLACE "${CMAKE_SOURCE_DIR}/"
+    ""
+    install_dir
+    ${CMAKE_CURRENT_LIST_DIR}
+    )
+
+  install(TARGETS ${target_name}
+    LIBRARY
+    DESTINATION ${install_dir}
+    )
+  
+  # generate config line
+  set(droid_name "${target_name}")
+  set(droid_path "${install_dir}/${target_name}.so")
+  configure_file(
+    ${CMAKE_SOURCE_DIR}/public/config/droid_config
+    ${CMAKE_CURRENT_BINARY_DIR}/droid_config
+    NEWLINE_STYLE UNIX
+    )
+
+  install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/droid_config
+    DESTINATION ${install_dir}
+    )
+
+  unset(install_dir)
+  unset(droid_name)
+  unset(droid_path)
+  unset(config_line)
 endmacro(add_droid target_name)
