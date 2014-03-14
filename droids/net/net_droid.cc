@@ -95,7 +95,7 @@ int NetDroid::OpenSession(sockaddr_in *sin, OpenSessionCallback cb, void *ctx) {
   char addr[INET_ADDRSTRLEN];
   DLOG("try to establish session {%d} to {%s:%d}", sid,
        evutil_inet_ntop(sin->sin_family, &(sin->sin_addr), addr, INET_ADDRSTRLEN), 
-       sin->sin_port);
+       ntohs(sin->sin_port));
   return 0;
 }
 

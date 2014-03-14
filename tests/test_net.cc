@@ -16,7 +16,7 @@ class TestNet : public Droid {
 
     sockaddr_in sin;
     sin.sin_family = AF_INET;
-    sin.sin_port = 9995;
+    sin.sin_port = htons(9995);
     inet_pton(AF_INET, "127.0.0.1", &sin.sin_addr);
 
     Interface *interface = util()->if_set->Get("INet");
